@@ -134,6 +134,55 @@ public:
     }
 };
 
+class MidpointMethod : Optimization
+{
+public:
+    void algorithm(int N) override
+    {
+        float E_calculated = (1 / 2) * ((b - a) / 2 * N);
+        float a_changeable = a, b_changeable = b;
+        float x, _x, y, _y, E_guaranteed, _E1, z;
+        int k = 0;
+        bool break_flag = false;
+
+        do
+        {
+            x = (a_changeable + b_changeable) / 2;
+            z = f_(x);
+            k++;
+
+            if (z == 0.0f)
+            {
+                E_guaranteed = 0.0f;
+                _x = x;
+                _y = f(_x);
+                _E1 = 0;
+                break_flag = true;
+                break;
+            }
+
+            if (z > 0)
+            {
+                b_changeable = x;
+            }
+            else
+            {
+                a_changeable = x;
+            }
+        } while (k < N);
+
+        if (!break_flag)
+        {
+            E_guaranteed = (b_changeable - a_changeable) / 2;
+            _x = (a_changeable + b_changeable) / 2;
+            _y = f(_x);
+            _E1 = abs(f_(_x));
+        }
+
+        cout << "~x: " << _x << "   ~y: " << _y << "    k: " << k << "   ~Е1: " << _E1 << "   E-гарантированное: " << E_guaranteed << "  Е-расчётное: " << E_calculated << "\n";
+    }
+};
+
 
 int main()
 {
@@ -149,4 +198,15 @@ int main()
     fibonacciNumberMethod->~FibonacciNumberMethod();
 
     delete fibonacciNumberMethod;
+
+    cout << "\nМетод средней точки:\n\n";
+
+    MidpointMethod* midpointMethod = new MidpointMethod();
+
+    for (int i = 1; i <= 5; i++)
+        midpointMethod->algorithm(i * 10);
+
+    midpointMethod->~MidpointMethod();
+
+    delete midpointMethod;
 }
