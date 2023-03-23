@@ -68,10 +68,10 @@ public:
     {
         fibonacciCalculation(N);
 
+        float x1, x2, _x, y1, y2, _y, E_calculated, E_guaranteed, _E1;
         float E = (b - a) / (2.0f * fibonacci[N - 1]);
         float delta = E / 100.0f;
         float a_changeable = a, b_changeable = b;
-        float x1, x2, _x, y1, y2, _y, E_calculated, E_guaranteed, _E1;
 
         int k = 2;
 
@@ -139,9 +139,9 @@ class MidpointMethod : Optimization
 public:
     void algorithm(int N) override
     {
+        float x, _x, y, _y, E_guaranteed, _E1, z;
         float E_calculated = (1 / 2) * ((b - a) / 2 * N);
         float a_changeable = a, b_changeable = b;
-        float x, _x, y, _y, E_guaranteed, _E1, z;
         int k = 0;
         bool break_flag = false;
 
@@ -188,8 +188,8 @@ class ChordMethod : Optimization
 public:
     void algorithm(int N) override
     {
-        float a_changeable = a, b_changeable = b;
         float x, _x, y, _y, E_guaranteed, E_calculated, _E1, z;
+        float a_changeable = a, b_changeable = b;
         float z1 = f_(a_changeable), z2 = f_(b_changeable);
         int k = 2;
         bool break_flag = false;
@@ -235,6 +235,60 @@ public:
     }
 };
 
+class TangentMethod : Optimization
+{
+public:
+    void algorithm(int N) override
+    {
+        float x, _x, y, _y, E_guaranteed, _E1, z;
+        float a_changeable = a, b_changeable = b;
+        float y1 = f(a_changeable), y2 = f(b_changeable);
+        float z1 = f_(a_changeable), z2 = f_(b_changeable);
+        int k = 4;
+        bool break_flag = false;
+
+        do
+        {
+            x = ((z2 * b_changeable - z1 * a_changeable) - (y2 - y1)) / (z2 - z1);
+            y = f(x);
+            z = f_(x);
+            k += 2;
+
+            if (z == 0)
+            {
+                _x = x;
+                _y = y;
+                E_guaranteed = 0;
+                _E1 = 0;
+                break_flag = true;
+                break;
+            }
+
+            if (z > 0)
+            {
+                b_changeable = x;
+                y2 = y;
+                z2 = z;
+            }
+            else
+            {
+                a_changeable = x;
+                y1 = y;
+                z1 = z;
+            }
+        } while (k < N);
+
+        if (!break_flag)
+        {
+            _x = x;
+            _y = y;
+            E_guaranteed = b - a;
+            _E1 = abs(z);
+        }
+
+        cout << "~x: " << _x << "   ~y: " << _y << "    k: " << k << "   ~Е1: " << _E1 << "   E-гарантированное: " << E_guaranteed << "\n";
+    }
+};
 
 int main()
 {
@@ -272,4 +326,15 @@ int main()
     chordMethod->~ChordMethod();
 
     delete chordMethod;
+
+    cout << "\nМетод касательных:\n\n";
+
+    TangentMethod* tangentMethod = new TangentMethod();
+
+    for (int i = 1; i <= 5; i++)
+        tangentMethod->algorithm(i * 10);
+
+    tangentMethod->~TangentMethod();
+
+    delete tangentMethod;
 }
