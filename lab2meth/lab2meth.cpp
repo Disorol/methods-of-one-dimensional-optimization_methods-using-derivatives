@@ -32,6 +32,16 @@ protected:
         return 2 * x - 1 / (x * x);
     }
 
+    /*
+
+        Метод расчёта двойной производной целевой функции.
+
+    */
+    float f__(float x)
+    {
+        return x / pow(x, 3) + 2;
+    }
+
 public:
     /*
 
@@ -290,6 +300,32 @@ public:
     }
 };
 
+class NewtonMethod : Optimization
+{
+public:
+    void algorithm(int N) override
+    {
+        float _x, y, _y, E_guaranteed, _E1;
+        float a_changeable = a, b_changeable = b;
+        float x = a_changeable, z = f_(x), u = f__(x);
+        int k = 2;
+
+        while ((k < N) && (z != 0))
+        {
+            x = x - z / u;
+            z = f_(x);
+            u = f__(x);
+            k += 2;
+        }
+
+        _x = x;
+        _y = f(_x);
+        _E1 = abs(z);
+
+        cout << "~x: " << _x << "   ~y: " << _y << "    k: " << k << "   ~Е1: " << _E1 << "\n";
+    }
+};
+
 int main()
 {
     setlocale(LC_ALL, "Russian");
@@ -337,4 +373,15 @@ int main()
     tangentMethod->~TangentMethod();
 
     delete tangentMethod;
+
+    cout << "\nМетод Ньютона:\n\n";
+
+    NewtonMethod* newtonMethod = new NewtonMethod();
+
+    for (int i = 1; i <= 5; i++)
+        newtonMethod->algorithm(i * 10);
+
+    newtonMethod->~NewtonMethod();
+
+    delete newtonMethod;
 }
