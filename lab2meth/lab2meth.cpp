@@ -183,6 +183,58 @@ public:
     }
 };
 
+class ChordMethod : Optimization
+{
+public:
+    void algorithm(int N) override
+    {
+        float a_changeable = a, b_changeable = b;
+        float x, _x, y, _y, E_guaranteed, E_calculated, _E1, z;
+        float z1 = f_(a_changeable), z2 = f_(b_changeable);
+        int k = 2;
+        bool break_flag = false;
+
+        do
+        {
+            x = a - (z1 / (z2 - z1)) * (b - a);
+            z = f_(x);
+            k++;
+
+            if (z == 0)
+            {
+                _x = x;
+                _y = f(_x);
+                E_guaranteed = 0;
+                _E1 = 0;
+                break_flag = true;
+                break;
+            }
+            
+            if (z > 0)
+            {
+                b_changeable = x;
+                z2 = z;
+            }
+            else
+            {
+                a_changeable = x;
+                z1 = z;
+            }
+
+        } while (k < N);
+
+        if (!break_flag) 
+        {
+            _x = x;
+            _y = f(_x);
+            E_guaranteed = b_changeable - a_changeable;
+            _E1 = abs(z);
+        }
+
+        cout << "~x: " << _x << "   ~y: " << _y << "    k: " << k << "   ~Е1: " << _E1 << "   E-гарантированное: " << E_guaranteed << "\n";
+    }
+};
+
 
 int main()
 {
@@ -209,4 +261,15 @@ int main()
     midpointMethod->~MidpointMethod();
 
     delete midpointMethod;
+
+    cout << "\nМетод хорд:\n\n";
+
+    ChordMethod* chordMethod = new ChordMethod();
+
+    for (int i = 1; i <= 5; i++)
+        chordMethod->algorithm(i * 10);
+
+    chordMethod->~ChordMethod();
+
+    delete chordMethod;
 }
