@@ -39,7 +39,7 @@ protected:
     */
     float f__(float x)
     {
-        return x / pow(x, 3) + 2;
+        return 2 / pow(x, 3) + 2;
     }
 
 public:
