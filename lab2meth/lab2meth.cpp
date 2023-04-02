@@ -140,7 +140,7 @@ public:
         E_guaranteed = (b_changeable - a_changeable) / 2;
         _E1 = f_(_x);
 
-        cout << "~x: " << _x << "   ~y: " << _y << "    Е-гарантированное: " << E_guaranteed << "   ~Е1: " << _E1 << "  Е-расчётное: " << E_calculated << "\n";
+        cout << "~x: " << _x << "   ~y: " << _y << "    Е-гарантированное: " << E_guaranteed << "   ~Е1: " << _E1 << "  Е0: " << E_calculated << "\n";
     }
 };
 
@@ -189,7 +189,7 @@ public:
             _E1 = abs(f_(_x));
         }
 
-        cout << "~x: " << _x << "   ~y: " << _y << "    k: " << k << "   ~Е1: " << _E1 << "   E-гарантированное: " << E_guaranteed << "  Е-расчётное: " << E_calculated << "\n";
+        cout << "~x: " << _x << "   ~y: " << _y << "    k: " << k << "   ~Е1: " << _E1 << "   E-гарантированное: " << E_guaranteed << "  Е0: " << E_calculated << "\n";
     }
 };
 
@@ -206,7 +206,7 @@ public:
 
         do
         {
-            x = a - (z1 / (z2 - z1)) * (b - a);
+            x = a_changeable - (z1 / (z2 - z1)) * (b_changeable - a_changeable);
             z = f_(x);
             k++;
 
@@ -292,7 +292,7 @@ public:
         {
             _x = x;
             _y = y;
-            E_guaranteed = b - a;
+            E_guaranteed = b_changeable - a_changeable;
             _E1 = abs(z);
         }
 
